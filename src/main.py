@@ -1,6 +1,7 @@
-import sys
 import argparse
 import pickle
+import ast
+import json
 from pathlib import Path
 import MeCab
 
@@ -10,12 +11,13 @@ def load_pickles(pickle_name):
         return jlpt_dict
         
 def tokenize(phrase):
-    python_version = f"python{sys.version.split()[0][0:-2]}"
-    tokenizer = MeCab.Tagger(f"-r /dev/null -d ./lib/{python_version}/site-packages/unidic_lite/dicdir")
+    tokenizer = MeCab.Tagger(f"-r /dev/null")
     tokens = tokenizer.parse(phrase).split("\n")
     token_dict = []
     for line in tokens:
         out = line.split("\t")
+        if 'EOS' in out:
+            break
         if len(out) > 1:
             token = {
                 "surface": out[0],
@@ -44,7 +46,8 @@ def main():
     jlpt_dict = load_pickles(args.pickle_name)
     tokens = tokenize(args.inputText)
     tag(tokens, jlpt_dict)
-    print(tokens)
+    
+    print(json.dumps(tokens, ensure_ascii=False))
 
 
 
