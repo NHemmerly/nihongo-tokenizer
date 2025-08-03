@@ -1,8 +1,6 @@
 import argparse
 import pickle
-import ast
 import json
-from pathlib import Path
 import MeCab
 
 def load_pickles(pickle_name):
@@ -11,7 +9,7 @@ def load_pickles(pickle_name):
         return jlpt_dict
         
 def tokenize(phrase):
-    tokenizer = MeCab.Tagger(f"-r /dev/null")
+    tokenizer = MeCab.Tagger("-r /dev/null")
     tokens = tokenizer.parse(phrase).split("\n")
     token_dict = []
     for line in tokens:
